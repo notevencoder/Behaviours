@@ -31,7 +31,7 @@ public class SteeringBehaviour implements Screen {
 
     public SteeringBehaviour(Behaviours game){
         followActor = true;
-        updateActor = true;
+        updateActor = false;
         this.game = game;
         b2dr = new Box2DDebugRenderer();
         gamecam = new OrthographicCamera();
@@ -60,10 +60,10 @@ public class SteeringBehaviour implements Screen {
             gamecam.zoom += 0.2f ;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)){
-            actor.getBody().setLinearVelocity(-10000,0);
+            actor.getBody().applyForceToCenter(new Vector2(-10000,0), true);
 
         }if (Gdx.input.isKeyJustPressed(Input.Keys.D)){
-            actor.getBody().setLinearVelocity(10000,0);
+            actor.getBody().applyForceToCenter(new Vector2(10000,0), true);
         }if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
             gamecam.position.x += 10;
         } if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
@@ -82,7 +82,7 @@ public class SteeringBehaviour implements Screen {
             updateActor = updateActor ? false: true;
 
         } if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            actor.getBody().applyLinearImpulse(new Vector2(0, 100) , actor.getBody().getPosition(), true);
+            actor.getBody().applyForceToCenter(new Vector2(0, 1000) ,  true);
         } if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             actor.getBody().setAwake(false);
         } if (Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT)){
@@ -107,6 +107,7 @@ public class SteeringBehaviour implements Screen {
 
         world.step(1/60f,6,2);
         actor.update(updateActor);
+        target.update();
         gamecam.update();
 
         if (followActor)

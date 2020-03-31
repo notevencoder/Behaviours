@@ -25,7 +25,7 @@ public class Actor extends BasicObj{
 
         rad = 8;
 
-        MaxSpeed = 300;
+        MaxSpeed = 8;
         this.x = x;
         this.y = y;
         this.world = screen.getWorld();
@@ -58,11 +58,10 @@ public class Actor extends BasicObj{
         System.out.println(body.getPosition().dst(t.getPosition()));
 
         if (f){
+            desiredVelocity = t.getPosition().sub(body.getPosition()).scl(MaxSpeed);
+            actualVelocity = desiredVelocity.sub(body.getLinearVelocity());
 
-            desiredVelocity = t.getPosition().sub(body.getPosition());
-            actualVelocity = body.getLinearVelocity().add(desiredVelocity.limit(MaxDesiredSpreed));
-            actualVelocity.limit(MaxDesiredSpreed);
-            body.applyLinearImpulse(actualVelocity, body.getPosition(),true);
+            body.applyLinearImpulse(actualVelocity,body.getPosition(),true);
 
         }else if (f) body.setLinearVelocity(0,0);
 //        System.out.println("current " + currentVelocity.x + "/" + currentVelocity.y);

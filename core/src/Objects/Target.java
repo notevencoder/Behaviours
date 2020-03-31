@@ -1,6 +1,7 @@
 package Objects;
 
 import Screens.SteeringBehaviour;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -26,7 +27,7 @@ public class Target extends BasicObj {
     @Override
     public void defineObject() {
         bdef = new BodyDef();
-        bdef.type = BodyDef.BodyType.StaticBody;
+        bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set(new Vector2(x,y));
 
         fdef = new FixtureDef();
@@ -48,5 +49,8 @@ public class Target extends BasicObj {
 
     public float getRad() {
         return rad;
+    }
+    public void  update(){
+        body.applyForceToCenter(0,0,true );
     }
 }
