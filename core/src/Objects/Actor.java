@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.Behaviours;
 
 public class Actor extends BasicObj{
 
@@ -15,24 +16,25 @@ public class Actor extends BasicObj{
     private ShapeRenderer shapes;
     private float width, height, x, y;
     private CircleShape shape = new CircleShape();
-    private Vector2 center;
+    private float MaxSpeed;
+
     private float rad;
 
     public Actor(SteeringBehaviour screen, float x, float y){
         this.screen = screen;
-        rad = 4;
-        this.width = 20;
-        this.height = 40;
 
+        rad = 8;
+
+        MaxSpeed = 300;
         this.x = x;
         this.y = y;
         this.world = screen.getWorld();
 
         defineObject();
-        center = new Vector2(x,y);
 
-        currentVelocity = new Vector2(0,0);
-        desiredVelocity = currentVelocity;
+
+        desiredVelocity = new Vector2(0,0);
+        actualVelocity = new Vector2(0,0);
 
     }
 
@@ -44,18 +46,29 @@ public class Actor extends BasicObj{
         body = world.createBody(bdef);
 
         fdef = new FixtureDef();
-        fdef.restitution = 1;
+        fdef.restitution = 2;
 
         shape.setRadius(rad);
         fdef.shape = shape;
         body.createFixture(fdef);
     }
 
-    public void update(){
-        center.x = body.getPosition().x; //+ rad;
-        center.y = body.getPosition().y; //+ rad;
+    public void update(boolean f){
+        Target t = screen.getTarget();
+        System.out.println(body.getPosition().dst(t.getPosition()));
 
+        if (f){
 
+            desiredVelocity = t.getPosition().sub(body.getPosition());
+            actualVelocity = body.getLinearVelocity().add(desiredVelocity.limit(MaxDesiredSpreed));
+            actualVelocity.limit(MaxDesiredSpreed);
+            body.applyLinearImpulse(actualVelocity, body.getPosition(),true);
+
+        }else if (f) body.setLinearVelocity(0,0);
+//        System.out.println("current " + currentVelocity.x + "/" + currentVelocity.y);
+//        System.out.println("actual " +actualVelocity.x + "/" + actualVelocity.y);
+//        System.out.println("desired "  +desiredVelocity.x + "/" + desiredVelocity.y);
+//        System.out.println(screen.getTarget().getPosition().x +  "/" + screen.getTarget().getPosition().y   );
 
 
 
@@ -63,8 +76,6 @@ public class Actor extends BasicObj{
 
 
     public void applyForce(){
-
-        body.applyLinearImpulse( getPosition().x + 100, getPosition().y + 100, getPosition().x, getPosition().y, true);
 
     }
 
@@ -80,9 +91,7 @@ public class Actor extends BasicObj{
     public Body getBody(){
         return body;
     }
-    public Vector2 getCenter(){
-        return center;
-    }
+
     public CircleShape getShape() {
         return shape;
     }

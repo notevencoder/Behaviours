@@ -14,6 +14,7 @@ public abstract class BasicObj {
     protected Vector2 position;
 
     protected Vector2 currentVelocity;
+    protected Vector2 actualVelocity;
 
     public abstract void defineObject();
 
